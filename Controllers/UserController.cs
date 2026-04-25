@@ -21,16 +21,62 @@ namespace Backend.Controllers
         [HttpGet("/api/users")]
         public ActionResult<List<UserDTO>> GetUsers()
         {
-            var listaUsers = _appDbContext.Users.Where(u => u.IsActive).ToList();
-            if (listaUsers.Count == 0)
-                return NotFound();
+            var listaUsers = _appDbContext.Users.ToList();
             var result = listaUsers.Select(u => new UserDTO
             {
                 Id = u.Id,
                 Name = u.Name,
-                Email = u.Email
+                Email = u.Email,
+                Role = u.Role,
+                IsActive = u.IsActive
             }).ToList();
             return Ok(result);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("/api/users")]
+        public ActionResult<UserDTO> CreateUser([FromBody] Backend.DTO.RegisterDTO req)
+        {
+            if (_appDbContext.Users.Any(u => u.Email == req.Email))
+                return BadRequest("Email already exists");
+
+            var user = new User
+            {
+                Name = req.Name,
+                Email = req.Email,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(req.Password),
+                Role = RoleEnum.Employee,
+                IsActive = true
+            };
+
+            _appDbContext.Users.Add(user);
+            _appDbContext.SaveChanges();
+
+            return Ok(new UserDTO
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                Role = user.Role,
+                IsActive = user.IsActive
+            });
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("/api/users/{id}")]
+        public ActionResult ToggleUserStatus(int id)
+        {
+            var user = _appDbContext.Users.FirstOrDefault(u => u.Id == id);
+            if (user == null)
+                return NotFound();
+
+            if (user.Role == RoleEnum.Admin && user.Email == "admin@test.com")
+                return BadRequest("Cannot deactivate the main admin");
+
+            user.IsActive = !user.IsActive;
+            _appDbContext.SaveChanges();
+
+            return Ok(new { IsActive = user.IsActive });
         }
 
         [Authorize]

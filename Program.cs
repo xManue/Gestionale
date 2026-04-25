@@ -120,10 +120,10 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
-// Redirect root to the dashboard
+// Redirect root to the admin dashboard
 app.MapGet("/", context =>
 {
-    context.Response.Redirect("/interventions.html");
+    context.Response.Redirect("/admin.html");
     return Task.CompletedTask;
 });
 

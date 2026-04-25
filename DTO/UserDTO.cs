@@ -1,4 +1,4 @@
-﻿using Backend.Models;
+using Backend.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,5 +11,6 @@ namespace Backend.ModelsDTO
         public string Name { get; set; } = null!;
         public RoleEnum Role { get; set; }
         public string Email { get; set; } = null!;
+        public bool IsActive { get; set; }
     }
 }

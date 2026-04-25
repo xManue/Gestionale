@@ -127,7 +127,7 @@ namespace Backend.Controllers
 
             var user = _appDbContext.Users.FirstOrDefault(u => u.IsActive && u.Id == userId);
             if (user == null)
-                return NotFound();
+                return Unauthorized();
 
             var interventions = _appDbContext.Interventions
                 .Include(i => i.Assignments)
