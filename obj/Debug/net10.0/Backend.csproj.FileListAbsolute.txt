@@ -77,3 +77,4 @@ C:\Users\manue\Desktop\ProgettoAlex\Backend\bin\Debug\net10.0\runtimes\win-x64\n
 C:\Users\manue\Desktop\ProgettoAlex\Backend\bin\Debug\net10.0\runtimes\win-x86\native\e_sqlite3.dll
 C:\Users\manue\Desktop\ProgettoAlex\Backend\obj\Debug\net10.0\compressed\yiqn26lk58-{0}-ls2msgguji-ls2msgguji.gz
 C:\Users\manue\Desktop\ProgettoAlex\Backend\obj\Debug\net10.0\compressed\i92i3qmo7z-{0}-fqge3ima69-fqge3ima69.gz
+C:\Users\manue\Desktop\ProgettoAlex\Backend\obj\Debug\net10.0\Backend.sourcelink.json

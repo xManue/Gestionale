@@ -8,7 +8,13 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddHttpLogging(logging => {
+
+// Configure port for Render deployment
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+builder.WebHost.UseUrls($"http://*:{port}");
+
+builder.Services.AddHttpLogging(logging =>
+{
     logging.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.All;
 });
 
@@ -105,11 +111,10 @@ app.UseMiddleware<MiddleWare>();
 
 // Configure the HTTP request pipeline.
 app.UseHttpLogging();
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+
+// Always use Swagger to test the deployed API easily
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
