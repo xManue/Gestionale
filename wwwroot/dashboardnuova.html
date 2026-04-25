@@ -1891,29 +1891,29 @@
           <div class="stats-row">
             <div class="stat-card s-blue">
               <div class="stat-label">Lavori del Mese</div>
-              <div class="stat-val">0</div>
-              <div class="stat-delta">Nessuno</div>
+              <div class="stat-val" id="stat-month-total">0</div>
+              <div class="stat-delta" id="stat-month-delta">Nessuno</div>
             </div>
             <div class="stat-card s-emerald">
               <div class="stat-label">Finiti</div>
-              <div class="stat-val">0</div>
-              <div class="stat-delta">0% completati</div>
+              <div class="stat-val" id="stat-finished">0</div>
+              <div class="stat-delta" id="stat-finished-delta">0% completati</div>
             </div>
             <div class="stat-card s-amber">
               <div class="stat-label">In Corso</div>
-              <div class="stat-val">0</div>
-              <div class="stat-delta neg">Nessun ritardo</div>
+              <div class="stat-val" id="stat-inprogress">0</div>
+              <div class="stat-delta neg" id="stat-inprogress-delta">Nessun ritardo</div>
             </div>
             <div class="stat-card s-violet">
               <div class="stat-label">Ragazzi a Lavoro</div>
-              <div class="stat-val">0</div>
-              <div class="stat-delta">Nessuno disponibile</div>
+              <div class="stat-val" id="stat-workers">0</div>
+              <div class="stat-delta" id="stat-workers-delta">Nessuno disponibile</div>
             </div>
           </div>
           <div class="dash-grid">
             <div>
               <div class="section-title">Cose da fare oggi</div>
-              <div class="activity-list">
+              <div class="activity-list" id="today-list">
                 <div style="font-size:13px;color:var(--text-muted);padding:10px 0;">Oggi niente di urgente. Approfittane
                   per prenderti un caffè</div>
               </div>
@@ -1924,41 +1924,41 @@
                 <div class="mini-stat">
                   <div class="mini-stat-label">Lavori finiti oggi</div>
                   <div class="mini-stat-row">
-                    <div class="mini-stat-val" style="color:var(--emerald)">0</div><span
-                      style="font-size:11px;color:var(--text-muted)">di 0</span>
+                    <div class="mini-stat-val" style="color:var(--emerald)" id="mini-finished-today">0</div><span
+                      style="font-size:11px;color:var(--text-muted)" id="mini-finished-today-meta">di 0</span>
                   </div>
                   <div class="progress-bar">
-                    <div class="progress-fill" style="width:0%;background:var(--emerald)"></div>
+                    <div class="progress-fill" style="width:0%;background:var(--emerald)" id="mini-finished-today-bar"></div>
                   </div>
                 </div>
                 <div class="mini-stat">
                   <div class="mini-stat-label">Quanti stanno lavorando</div>
                   <div class="mini-stat-row">
-                    <div class="mini-stat-val" style="color:var(--accent)">0%</div><span
-                      style="font-size:11px;color:var(--text-muted)">0/0 al lavoro</span>
+                    <div class="mini-stat-val" style="color:var(--accent)" id="mini-working-pct">0%</div><span
+                      style="font-size:11px;color:var(--text-muted)" id="mini-working-meta">0/0 al lavoro</span>
                   </div>
                   <div class="progress-bar">
-                    <div class="progress-fill" style="width:0%"></div>
+                    <div class="progress-fill" style="width:0%" id="mini-working-bar"></div>
                   </div>
                 </div>
                 <div class="mini-stat">
                   <div class="mini-stat-label">Lavori indietro</div>
                   <div class="mini-stat-row">
-                    <div class="mini-stat-val" style="color:var(--red)">0</div><span
-                      style="font-size:11px;color:var(--text-muted)">tutto tranquillo</span>
+                    <div class="mini-stat-val" style="color:var(--red)" id="mini-late">0</div><span
+                      style="font-size:11px;color:var(--text-muted)" id="mini-late-meta">tutto tranquillo</span>
                   </div>
                   <div class="progress-bar">
-                    <div class="progress-fill" style="width:0%;background:var(--red)"></div>
+                    <div class="progress-fill" style="width:0%;background:var(--red)" id="mini-late-bar"></div>
                   </div>
                 </div>
                 <div class="mini-stat">
                   <div class="mini-stat-label">Servizi usati</div>
                   <div class="mini-stat-row">
-                    <div class="mini-stat-val" style="color:var(--amber)">0</div><span
-                      style="font-size:11px;color:var(--text-muted)">nessun modello</span>
+                    <div class="mini-stat-val" style="color:var(--amber)" id="mini-services">0</div><span
+                      style="font-size:11px;color:var(--text-muted)" id="mini-services-meta">nessun modello</span>
                   </div>
                   <div class="progress-bar">
-                    <div class="progress-fill" style="width:0%;background:var(--amber)"></div>
+                    <div class="progress-fill" style="width:0%;background:var(--amber)" id="mini-services-bar"></div>
                   </div>
                 </div>
               </div>
@@ -2045,7 +2045,7 @@
               <div class="page-h">Template Lavori</div>
               <div class="page-sub">Modelli di lavoro pronti all'uso da usare nel calendario</div>
             </div>
-            <button class="btn-primary" type="button">
+            <button class="btn-primary" type="button" id="worktypes-new-btn">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
                 stroke-linejoin="round">
                 <line x1="12" y1="5" x2="12" y2="19" />
@@ -2054,9 +2054,10 @@
               Nuovo Modello
             </button>
           </div>
-          <div class="wt-grid">
+          <div class="wt-grid" id="worktypesGrid">
             <div class="wt-card"
-              style="border-style:dashed;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:200px;gap:8px">
+              style="border-style:dashed;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:200px;gap:8px"
+              id="worktypesEmptyCard">
               <div
                 style="width:40px;height:40px;border-radius:10px;border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--text-muted)">
                 +</div>
@@ -2072,7 +2073,7 @@
               <div class="page-h">Schiavi</div>
               <div class="page-sub">Gestisci i tuoi schiavi</div>
             </div>
-            <button class="btn-primary" type="button">
+            <button class="btn-primary" type="button" id="employees-new-btn">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
                 stroke-linejoin="round">
                 <line x1="12" y1="5" x2="12" y2="19" />
@@ -2089,8 +2090,7 @@
               <div class="th">Stato</div>
               <div class="th">Azioni</div>
             </div>
-            <div style="font-size:13px;color:var(--text-muted);padding:20px 16px;text-align:center;">Mmmh... non ci sono
-              operai salvati. Fai tutto da solo?</div>
+            <div id="empList" style="font-size:13px;color:var(--text-muted);padding:20px 16px;text-align:center;">Caricamento in corso...</div>
           </div>
         </div>
 
@@ -2273,12 +2273,520 @@
     </div>
   </div>
 
+  <!-- MODAL NEW EMPLOYEE -->
+  <div class="modal-overlay" id="emp-modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Aggiungi Schiavo</div>
+        <div class="modal-close" id="emp-modal-close-btn">✕</div>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <label>Nome Completo</label>
+          <input class="form-input" type="text" id="emp-new-name" placeholder="Es. Mario Rossi">
+        </div>
+        <div class="form-row">
+          <label>Email (Username per Login)</label>
+          <input class="form-input" type="email" id="emp-new-email" placeholder="mario@test.com">
+        </div>
+        <div class="form-row">
+          <label>Password Iniziale</label>
+          <input class="form-input" type="text" id="emp-new-password" placeholder="password123">
+        </div>
+        <div id="emp-modal-error" style="color:var(--red); font-size:12px; display:none"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" type="button" id="emp-modal-cancel-btn">Annulla</button>
+        <button class="btn-primary" type="button" id="emp-modal-save-btn">Crea</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL NEW WORKTYPE -->
+  <div class="modal-overlay" id="wt-modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Nuovo Modello</div>
+        <div class="modal-close" id="wt-modal-close-btn">✕</div>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <label>Nome</label>
+          <input class="form-input" type="text" id="wt-new-name" placeholder="Es. Sostituzione caldaia">
+        </div>
+        <div class="form-row">
+          <label>Descrizione</label>
+          <textarea class="form-input" id="wt-new-desc" placeholder="Descrizione breve..."></textarea>
+        </div>
+        <div class="form-row">
+          <label>Materiali <span class="materials-hint">(uno per riga)</span></label>
+          <textarea class="form-input" id="wt-new-materials" placeholder="Es. Valvola 3/4&quot;&#10;Teflon"></textarea>
+        </div>
+        <div class="form-row">
+          <label>Attrezzi <span class="materials-hint">(uno per riga)</span></label>
+          <textarea class="form-input" id="wt-new-tools" placeholder="Es. Chiave inglese&#10;Trapano"></textarea>
+        </div>
+        <div id="wt-modal-error" style="color:var(--red); font-size:12px; display:none"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" type="button" id="wt-modal-cancel-btn">Annulla</button>
+        <button class="btn-primary" type="button" id="wt-modal-save-btn">Crea</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     (function () {
+      const ADMIN_TOKEN_KEY = 'admin_token';
+      let token = localStorage.getItem(ADMIN_TOKEN_KEY) || '';
+      let jwtPayload = null;
+
+      function parseJwtPayload(jwt) {
+        const part = (jwt || '').split('.')[1];
+        if (!part) return null;
+        const base64 = part.replace(/-/g, '+').replace(/_/g, '/');
+        const json = decodeURIComponent(atob(base64).split('').map(function (c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(json);
+      }
+
+      function getRoleFromPayload(payload) {
+        if (!payload) return '';
+        return payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || '';
+      }
+
+      function getNameFromPayload(payload) {
+        if (!payload) return '';
+        return payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || '';
+      }
+
+      function getUserIdFromPayload(payload) {
+        if (!payload) return '';
+        return payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] || '';
+      }
+
+      async function apiFetch(path, options) {
+        const opts = options || {};
+        const headers = Object.assign({}, opts.headers || {});
+        if (token) headers['Authorization'] = 'Bearer ' + token;
+        return fetch(path, Object.assign({}, opts, { headers }));
+      }
+
+      async function apiJson(path, options) {
+        const res = await apiFetch(path, options);
+        if (res.status === 401 || res.status === 403) {
+          doLogout();
+          throw new Error('Sessione scaduta o accesso negato');
+        }
+        if (!res.ok) {
+          const text = await res.text();
+          throw new Error(text || ('Errore API: ' + res.status));
+        }
+        return await res.json();
+      }
+
+      function showApp() {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('appShell').style.display = 'grid';
+      }
+
+      function showLogin() {
+        document.getElementById('appShell').style.display = 'none';
+        document.getElementById('loginScreen').style.display = 'flex';
+      }
+
+      window.doLogout = function doLogout() {
+        token = '';
+        jwtPayload = null;
+        localStorage.removeItem(ADMIN_TOKEN_KEY);
+        showLogin();
+        const passEl = document.getElementById('loginPass');
+        if (passEl) passEl.value = '';
+      };
+
+      async function handleLogin(e) {
+        e.preventDefault();
+        const btn = document.getElementById('loginBtn');
+        const errEl = document.getElementById('loginError');
+        btn.disabled = true; btn.textContent = 'Accesso...';
+        errEl.style.display = 'none';
+
+        try {
+          const res = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: document.getElementById('loginEmail').value.trim(),
+              password: document.getElementById('loginPass').value
+            })
+          });
+          if (!res.ok) throw new Error('Credenziali non valide o non sei admin');
+          const data = await res.json();
+          const payload = parseJwtPayload(data.token);
+          const role = getRoleFromPayload(payload);
+          if (role !== 'Admin') throw new Error('Accesso negato: Solo Admin');
+
+          token = data.token;
+          jwtPayload = payload;
+          localStorage.setItem(ADMIN_TOKEN_KEY, token);
+
+          applyCurrentUserUi();
+          showApp();
+          // Dopo il login vai direttamente alla pagina di gestione.
+          navigate('employees');
+          await bootstrapData();
+        } catch (err) {
+          errEl.textContent = err && err.message ? err.message : 'Errore di accesso';
+          errEl.style.display = 'block';
+        } finally {
+          btn.disabled = false; btn.textContent = 'Accedi';
+        }
+      }
+
+      function applyCurrentUserUi() {
+        const name = getNameFromPayload(jwtPayload) || 'Admin';
+        const initials = name.trim().split(/\s+/).slice(0, 2).map(s => s[0] || '').join('').toUpperCase() || 'AD';
+        const avatarTop = document.getElementById('topbar-avatar');
+        if (avatarTop) avatarTop.textContent = initials.slice(0, 2);
+        const sideName = document.querySelector('.sidebar-footer .user-name');
+        if (sideName) sideName.textContent = name;
+      }
+
+      function statusChipClass(statusStr) {
+        const s = String(statusStr || '').toLowerCase();
+        if (s.includes('completed') || s.includes('done') || s.includes('finish')) return { cls: 'chip-green', dot: 'chip-green' };
+        if (s.includes('inprogress') || s.includes('progress') || s.includes('working')) return { cls: 'chip-amber', dot: 'chip-amber' };
+        if (s.includes('planned') || s.includes('todo') || s.includes('programm')) return { cls: 'chip-blue', dot: 'chip-blue' };
+        if (s.includes('cancel')) return { cls: 'chip-red', dot: 'chip-red' };
+        return { cls: 'chip-violet', dot: 'chip-violet' };
+      }
+
+      function sameDay(a, b) {
+        return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+      }
+
+      function monthKey(d) {
+        return d.getFullYear() + '-' + pad(d.getMonth() + 1);
+      }
+
+      async function loadUsers() {
+        const list = document.getElementById('empList');
+        list.textContent = 'Caricamento in corso...';
+        const users = await apiJson('/api/users');
+        list.innerHTML = '';
+
+        if (!users || users.length === 0) {
+          list.innerHTML = '<div style="font-size:13px;color:var(--text-muted);padding:20px 16px;text-align:center;">Nessun operaio salvato.</div>';
+          return;
+        }
+
+        const employeesOnly = users.filter(u => String(u.email || '').toLowerCase() !== 'admin@test.com');
+
+        employeesOnly.forEach(u => {
+          const name = u.name || '';
+          const email = u.email || '';
+          const initials = (name.substring(0, 2) || '??').toUpperCase();
+          const jobsMonth = '—';
+          const isActiveStr = u.isActive
+            ? '<span class="status-pill status-active">Attivo</span>'
+            : '<span class="status-pill status-away">Disattivato</span>';
+          const actionBtn = u.isActive
+            ? `<button class="icon-btn-sm danger" title="Disattiva" data-action="toggle" data-id="${u.id}">
+                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                   <path d="M3 6h18"></path><path d="M8 6v14"></path><path d="M16 6v14"></path><path d="M10 6l1-2h2l1 2"></path>
+                 </svg>
+               </button>`
+            : `<button class="icon-btn-sm" title="Riattiva" data-action="toggle" data-id="${u.id}">
+                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                   <path d="M20 12a8 8 0 1 1-2.34-5.66"></path><path d="M20 4v8h-8"></path>
+                 </svg>
+               </button>`;
+
+          const row = document.createElement('div');
+          row.className = 'emp-row';
+          row.innerHTML = `
+            <div class="emp-cell-name">
+              <div class="avatar-emp" style="background: linear-gradient(135deg, #6366f1, #a78bfa); color: white;">${initials}</div>
+              <div>
+                <div class="emp-name">${escapeHtml(name)}</div>
+                <div class="emp-email">${escapeHtml(email)}</div>
+              </div>
+            </div>
+            <div class="emp-td">Tecnico App</div>
+            <div class="emp-td">${jobsMonth}</div>
+            <div class="emp-td">${isActiveStr}</div>
+            <div class="emp-actions">${actionBtn}</div>
+          `;
+          list.appendChild(row);
+        });
+
+        list.querySelectorAll('[data-action="toggle"]').forEach(btn => {
+          btn.addEventListener('click', async function (e) {
+            e.stopPropagation();
+            const id = this.getAttribute('data-id');
+            if (!id) return;
+            if (!confirm('Sicuro di voler cambiare lo stato di questo utente?')) return;
+            await apiJson('/api/users/' + id, { method: 'DELETE' });
+            await loadUsers();
+            await syncModalEmployees();
+          });
+        });
+      }
+
+      function escapeHtml(s) {
+        return String(s || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      async function syncModalEmployees() {
+        const wrap = document.getElementById('modal-employees');
+        if (!wrap) return;
+        wrap.innerHTML = '<span style="font-size:12px;color:var(--text-muted);padding-top:4px;">Caricamento...</span>';
+        const users = await apiJson('/api/users');
+        const employees = (users || []).filter(u => u.isActive && String(u.email || '').toLowerCase() !== 'admin@test.com');
+        if (employees.length === 0) {
+          wrap.innerHTML = '<span style="font-size:12px;color:var(--text-muted);padding-top:4px;">Prima aggiungi un ragazzo...</span>';
+          return;
+        }
+        wrap.innerHTML = '';
+        employees.forEach(u => {
+          const tag = document.createElement('div');
+          tag.className = 'ms-tag';
+          tag.textContent = u.name || u.email || ('Utente ' + u.id);
+          tag.dataset.userId = String(u.id);
+          tag.addEventListener('click', function () { this.classList.toggle('selected'); });
+          wrap.appendChild(tag);
+        });
+      }
+
+      async function loadInterventions() {
+        const raw = await apiJson('/api/intervention/getall');
+        const list = Array.isArray(raw) ? raw : [];
+
+        interventions = {};
+        const now = new Date();
+        const thisMonthKey = monthKey(now);
+        let monthTotal = 0;
+        let finished = 0;
+        let inProgress = 0;
+        let finishedToday = 0;
+        let late = 0;
+
+        const today = new Date();
+        const todayList = [];
+
+        list.forEach(it => {
+          const start = it.dateStart ? new Date(it.dateStart) : null;
+          if (!start || isNaN(start.getTime())) return;
+          const key = start.getFullYear() + '-' + pad(start.getMonth() + 1) + '-' + pad(start.getDate());
+
+          const chip = statusChipClass(it.status);
+          const label = it.title || 'Intervento';
+          interventions[key] = interventions[key] || [];
+          interventions[key].push({ label, cls: chip.cls, raw: it });
+
+          if (monthKey(start) === thisMonthKey) {
+            monthTotal++;
+            const st = String(it.status || '');
+            if (st.toLowerCase().includes('completed')) finished++;
+            else if (st.toLowerCase().includes('inprogress')) inProgress++;
+          }
+
+          const st2 = String(it.status || '').toLowerCase();
+          if (st2.includes('completed') && it.completedAt) {
+            const comp = new Date(it.completedAt);
+            if (!isNaN(comp.getTime()) && sameDay(comp, today)) finishedToday++;
+          }
+
+          if (!st2.includes('completed') && it.dateEnd) {
+            const end = new Date(it.dateEnd);
+            if (!isNaN(end.getTime()) && end.getTime() < now.getTime()) late++;
+          }
+
+          if (sameDay(start, today)) {
+            todayList.push(it);
+          }
+        });
+
+        // Sort chips within a day by time
+        Object.keys(interventions).forEach(k => {
+          interventions[k].sort((a, b) => {
+            const da = a.raw && a.raw.dateStart ? new Date(a.raw.dateStart).getTime() : 0;
+            const db = b.raw && b.raw.dateStart ? new Date(b.raw.dateStart).getTime() : 0;
+            return da - db;
+          });
+        });
+
+        // Stats UI
+        document.getElementById('stat-month-total').textContent = String(monthTotal);
+        document.getElementById('stat-finished').textContent = String(finished);
+        document.getElementById('stat-inprogress').textContent = String(inProgress);
+        document.getElementById('stat-workers').textContent = '—';
+
+        const pct = monthTotal > 0 ? Math.round((finished / monthTotal) * 100) : 0;
+        document.getElementById('stat-finished-delta').textContent = pct + '% completati';
+        document.getElementById('stat-month-delta').textContent = monthTotal === 0 ? 'Nessuno' : 'Totale interventi pianificati';
+        document.getElementById('stat-inprogress-delta').textContent = late > 0 ? (late + ' in ritardo') : 'Nessun ritardo';
+        document.getElementById('stat-inprogress-delta').classList.toggle('neg', late > 0);
+
+        document.getElementById('mini-finished-today').textContent = String(finishedToday);
+        document.getElementById('mini-finished-today-meta').textContent = 'di ' + String(todayList.length);
+        const finishedTodayPct = todayList.length > 0 ? Math.round((finishedToday / todayList.length) * 100) : 0;
+        document.getElementById('mini-finished-today-bar').style.width = finishedTodayPct + '%';
+
+        // “working” unknown from backend; keep 0/total employees placeholder
+        const users = await apiJson('/api/users');
+        const activeEmployees = (users || []).filter(u => u.isActive && String(u.email || '').toLowerCase() !== 'admin@test.com').length;
+        document.getElementById('mini-working-pct').textContent = '0%';
+        document.getElementById('mini-working-meta').textContent = '0/' + activeEmployees + ' al lavoro';
+        document.getElementById('mini-working-bar').style.width = '0%';
+
+        document.getElementById('mini-late').textContent = String(late);
+        document.getElementById('mini-late-meta').textContent = late > 0 ? 'da recuperare' : 'tutto tranquillo';
+        document.getElementById('mini-late-bar').style.width = (late > 0 ? '100%' : '0%');
+
+        document.getElementById('mini-services').textContent = '—';
+        document.getElementById('mini-services-meta').textContent = '—';
+        document.getElementById('mini-services-bar').style.width = '0%';
+
+        // Today list
+        const todayWrap = document.getElementById('today-list');
+        if (todayWrap) {
+          todayWrap.innerHTML = '';
+          if (todayList.length === 0) {
+            todayWrap.innerHTML = '<div style="font-size:13px;color:var(--text-muted);padding:10px 0;">Oggi niente di urgente. Approfittane per prenderti un caffè</div>';
+          } else {
+            todayList
+              .sort((a, b) => new Date(a.dateStart).getTime() - new Date(b.dateStart).getTime())
+              .slice(0, 6)
+              .forEach(it => {
+                const chip = statusChipClass(it.status);
+                const start = new Date(it.dateStart);
+                const time = pad(start.getHours()) + ':' + pad(start.getMinutes());
+                const item = document.createElement('div');
+                item.className = 'activity-item';
+                item.innerHTML = `
+                  <div class="activity-color" style="background: var(--accent)"></div>
+                  <div class="activity-info">
+                    <div class="activity-name">${escapeHtml(it.title || 'Intervento')}</div>
+                    <div class="activity-meta">
+                      <span>${escapeHtml(it.location || '—')}</span>
+                      <span class="${chip.cls}" style="padding:1px 6px;border-radius:6px;font-size:10px;">${escapeHtml(it.status || '')}</span>
+                    </div>
+                  </div>
+                  <div class="activity-time">${time}</div>
+                `;
+                todayWrap.appendChild(item);
+              });
+          }
+        }
+      }
+
+      async function bootstrapData() {
+        await loadUsers();
+        await syncModalEmployees();
+        await loadWorkTypes();
+        await loadInterventions();
+        renderCalendar();
+      }
+
+      async function loadWorkTypes() {
+        const select = document.getElementById('modal-worktype');
+        const grid = document.getElementById('worktypesGrid');
+        const emptyCard = document.getElementById('worktypesEmptyCard');
+
+        const workTypes = await apiJson('/api/worktypes');
+
+        // Populate select
+        if (select) {
+          select.innerHTML = '<option value="">— Seleziona —</option>';
+          (workTypes || []).forEach(w => {
+            const opt = document.createElement('option');
+            opt.value = String(w.id);
+            opt.textContent = w.name;
+            select.appendChild(opt);
+          });
+        }
+
+        // Render templates grid
+        if (grid) {
+          // keep emptyCard, remove other dynamic cards
+          Array.from(grid.querySelectorAll('[data-wt-card="1"]')).forEach(el => el.remove());
+
+          if (!workTypes || workTypes.length === 0) {
+            if (emptyCard) emptyCard.style.display = 'flex';
+            return;
+          }
+          if (emptyCard) emptyCard.style.display = 'none';
+
+          workTypes.forEach(w => {
+            const card = document.createElement('div');
+            card.className = 'wt-card';
+            card.setAttribute('data-wt-card', '1');
+            const matCount = (w.materials || []).length;
+            const toolCount = (w.tools || []).length;
+
+            card.innerHTML = `
+              <div class="wt-name">${escapeHtml(w.name)}</div>
+              <div style="font-size:12px;color:var(--text-muted);min-height:34px">${escapeHtml(w.description || '—')}</div>
+
+              <div class="wt-section-label">Materiali</div>
+              <div class="wt-chips-row">
+                ${(w.materials || []).slice(0, 4).map(x => `<span class="wt-chip">${escapeHtml(x)}</span>`).join('')}
+                ${matCount > 4 ? `<span class="wt-chip">+${matCount - 4}</span>` : ''}
+              </div>
+
+              <div class="wt-section-label">Attrezzi</div>
+              <div class="wt-chips-row">
+                ${(w.tools || []).slice(0, 4).map(x => `<span class="wt-chip">${escapeHtml(x)}</span>`).join('')}
+                ${toolCount > 4 ? `<span class="wt-chip">+${toolCount - 4}</span>` : ''}
+              </div>
+
+              <div class="wt-actions">
+                <button class="btn-ghost" type="button" data-action="wt-use" data-id="${w.id}">Usa</button>
+                <button class="btn-ghost" type="button" data-action="wt-del" data-id="${w.id}" style="color:var(--red);border-color:var(--red-mid);background:var(--red-light)">Elimina</button>
+              </div>
+            `;
+
+            grid.appendChild(card);
+          });
+
+          grid.querySelectorAll('[data-action="wt-use"]').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+              e.stopPropagation();
+              const id = this.getAttribute('data-id');
+              navigate('calendar');
+              if (select && id) select.value = String(id);
+              openModal();
+            });
+          });
+
+          grid.querySelectorAll('[data-action="wt-del"]').forEach(btn => {
+            btn.addEventListener('click', async function (e) {
+              e.stopPropagation();
+              const id = this.getAttribute('data-id');
+              if (!id) return;
+              if (!confirm('Eliminare questo modello?')) return;
+              await apiJson('/api/worktypes/' + id, { method: 'DELETE' });
+              await loadWorkTypes();
+            });
+          });
+        }
+      }
+
       /* ── PAGE NAVIGATION ── */
       const pageMeta = {
         dashboard: { title: 'Situazione Generale', subtitle: "Ciao Capo, ecco i casini di oggi:" },
         calendar: { title: 'Il Calendario', subtitle: 'Appuntamenti e chiamate' },
+        jobs: { title: 'I Lavori da Fare', subtitle: 'Elenco dei lavori in programma e quelli finiti' },
+        worktypes: { title: 'Template Lavori', subtitle: "Modelli pronti all'uso" },
+        employees: { title: 'Schiavi', subtitle: 'Gestisci i tuoi schiavi' },
+        settings: { title: 'Impostazioni', subtitle: 'Come ti piace organizzare il lavoro' }
       };
 
       function navigate(pageId) {
@@ -2340,12 +2848,129 @@
 
       document.getElementById('modal-close-btn').addEventListener('click', closeModal);
       document.getElementById('modal-cancel-btn').addEventListener('click', closeModal);
-      document.getElementById('modal-save-btn').addEventListener('click', closeModal);
+      document.getElementById('modal-save-btn').addEventListener('click', async function () {
+        const date = document.getElementById('modal-date').value;
+        const time = document.getElementById('modal-time').value;
+        const workTypeId = parseInt(document.getElementById('modal-worktype').value || '0', 10);
+        if (!workTypeId) { alert('Seleziona un tipo di lavoro'); return; }
+        if (!date || !time) { alert('Inserisci data e ora'); return; }
+
+        // create DateStart as local datetime -> ISO
+        const isoStart = new Date(date + 'T' + time + ':00').toISOString();
+
+        try {
+          await apiJson('/api/intervention', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              workTypeId,
+              dateStart: isoStart,
+              location: null,
+              titleOverride: null,
+              descriptionOverride: null,
+              priority: 0
+            })
+          });
+          closeModal();
+          await loadInterventions();
+          renderCalendar();
+          navigate('calendar');
+        } catch (err) {
+          alert(err && err.message ? err.message : 'Errore durante il salvataggio');
+        }
+      });
       modalOverlay.addEventListener('click', function (e) { if (e.target === modalOverlay) closeModal(); });
 
       /* buttons that open modal */
       document.getElementById('cal-new-btn').addEventListener('click', function () { openModal(); });
       document.getElementById('jobs-new-btn').addEventListener('click', function () { openModal(); });
+
+      // EMPLOYEE MODAL
+      const empOverlay = document.getElementById('emp-modal-overlay');
+      function openEmpModal() {
+        document.getElementById('emp-new-name').value = '';
+        document.getElementById('emp-new-email').value = '';
+        document.getElementById('emp-new-password').value = '';
+        const err = document.getElementById('emp-modal-error');
+        err.style.display = 'none';
+        empOverlay.classList.add('open');
+      }
+      function closeEmpModal() { empOverlay.classList.remove('open'); }
+      document.getElementById('employees-new-btn').addEventListener('click', openEmpModal);
+      document.getElementById('emp-modal-close-btn').addEventListener('click', closeEmpModal);
+      document.getElementById('emp-modal-cancel-btn').addEventListener('click', closeEmpModal);
+      empOverlay.addEventListener('click', function (e) { if (e.target === empOverlay) closeEmpModal(); });
+      document.getElementById('emp-modal-save-btn').addEventListener('click', async function () {
+        const name = document.getElementById('emp-new-name').value.trim();
+        const email = document.getElementById('emp-new-email').value.trim();
+        const password = document.getElementById('emp-new-password').value;
+        const errEl = document.getElementById('emp-modal-error');
+
+        if (!name || !email || !password) {
+          errEl.textContent = 'Compila tutti i campi.';
+          errEl.style.display = 'block';
+          return;
+        }
+
+        try {
+          await apiJson('/api/users', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, password })
+          });
+          closeEmpModal();
+          await loadUsers();
+          await syncModalEmployees();
+        } catch (err) {
+          errEl.textContent = err && err.message ? err.message : 'Errore durante la creazione.';
+          errEl.style.display = 'block';
+        }
+      });
+
+      // WORKTYPE MODAL
+      const wtOverlay = document.getElementById('wt-modal-overlay');
+      function openWtModal() {
+        document.getElementById('wt-new-name').value = '';
+        document.getElementById('wt-new-desc').value = '';
+        document.getElementById('wt-new-materials').value = '';
+        document.getElementById('wt-new-tools').value = '';
+        const err = document.getElementById('wt-modal-error');
+        err.style.display = 'none';
+        wtOverlay.classList.add('open');
+      }
+      function closeWtModal() { wtOverlay.classList.remove('open'); }
+      document.getElementById('worktypes-new-btn').addEventListener('click', openWtModal);
+      const emptyCard = document.getElementById('worktypesEmptyCard');
+      if (emptyCard) emptyCard.addEventListener('click', openWtModal);
+      document.getElementById('wt-modal-close-btn').addEventListener('click', closeWtModal);
+      document.getElementById('wt-modal-cancel-btn').addEventListener('click', closeWtModal);
+      wtOverlay.addEventListener('click', function (e) { if (e.target === wtOverlay) closeWtModal(); });
+      document.getElementById('wt-modal-save-btn').addEventListener('click', async function () {
+        const name = document.getElementById('wt-new-name').value.trim();
+        const description = document.getElementById('wt-new-desc').value.trim();
+        const materials = document.getElementById('wt-new-materials').value.split('\n').map(x => x.trim()).filter(Boolean);
+        const tools = document.getElementById('wt-new-tools').value.split('\n').map(x => x.trim()).filter(Boolean);
+        const errEl = document.getElementById('wt-modal-error');
+
+        if (!name) {
+          errEl.textContent = 'Inserisci un nome.';
+          errEl.style.display = 'block';
+          return;
+        }
+
+        try {
+          await apiJson('/api/worktypes', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, description: description || null, materials, tools })
+          });
+          closeWtModal();
+          await loadWorkTypes();
+        } catch (err) {
+          errEl.textContent = err && err.message ? err.message : 'Errore durante la creazione.';
+          errEl.style.display = 'block';
+        }
+      });
 
       /* ── SETTINGS TOGGLES ── */
       ['t1', 't2', 't3', 't4'].forEach(function (id) {
@@ -2455,6 +3080,26 @@
         currentCal.setMonth(currentCal.getMonth() + 1);
         renderCalendar();
       });
+
+      // AUTH INIT
+      document.getElementById('loginForm').addEventListener('submit', handleLogin);
+
+      if (token) {
+        try {
+          const payload = parseJwtPayload(token);
+          if (getRoleFromPayload(payload) !== 'Admin') throw new Error('not admin');
+          jwtPayload = payload;
+          applyCurrentUserUi();
+          showApp();
+          // Autologin: porta alla pagina di gestione.
+          navigate('employees');
+          bootstrapData().catch(function () { doLogout(); });
+        } catch (_) {
+          doLogout();
+        }
+      } else {
+        showLogin();
+      }
 
       renderCalendar();
     })();

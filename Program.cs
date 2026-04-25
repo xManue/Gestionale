@@ -94,7 +94,10 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.EnsureCreated();
-    if (!db.Users.Any(u => u.Role == RoleEnum.Admin))
+    // Seed an admin user (and ensure it's active) for local/dev usage.
+    // Older databases might have admin inactive; we normalize here.
+    var mainAdmin = db.Users.FirstOrDefault(u => u.Email == "admin@test.com");
+    if (mainAdmin == null)
     {
         db.Users.Add(new User
         {
@@ -102,8 +105,13 @@ using (var scope = app.Services.CreateScope())
             Email = "admin@test.com",
             PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123"),
             Role = RoleEnum.Admin,
+            IsActive = true,
         });
-
+        db.SaveChanges();
+    }
+    else if (!mainAdmin.IsActive)
+    {
+        mainAdmin.IsActive = true;
         db.SaveChanges();
     }
 }
