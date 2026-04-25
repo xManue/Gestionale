@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - ProgettoAlex</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --sidebar: #0f1117;
+      --sidebar-border: rgba(255, 255, 255, 0.06);
+      --sidebar-hover: rgba(255, 255, 255, 0.05);
+      --sidebar-active: rgba(99, 102, 241, 0.2);
+      --accent: #6366f1;
+      --accent-dark: #4f46e5;
+      --accent-light: #eef2ff;
+      --accent-glow: rgba(99, 102, 241, 0.15);
+      --text-primary: #0f172a;
+      --text-secondary: #64748b;
+      --text-muted: #94a3b8;
+      --text-sidebar: rgba(255, 255, 255, 0.55);
+      --text-sidebar-active: #fff;
+      --border: #e2e8f0;
+      --surface: #ffffff;
+      --bg: #f8fafc;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.16);
+      --red: #ef4444;
+      --red-light: #fef2f2;
+      --red-mid: #fee2e2;
+      --amber: #f59e0b;
+      --amber-light: #fffbeb;
+      --amber-mid: #fde68a;
+      --emerald: #10b981;
+      --emerald-light: #ecfdf5;
+      --emerald-mid: #d1fae5;
+      --blue: #3b82f6;
+      --blue-light: #eff6ff;
+      --blue-mid: #dbeafe;
+      --violet: #8b5cf6;
+      --violet-light: #f5f3ff;
+      --violet-mid: #ede9fe;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html,
+    body {
+      height: 100%;
+      overflow: hidden
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      font-size: 14px;
+      line-height: 1.5
+    }
+
+    /* ── LOGIN SCREEN ── */
+    #loginScreen {
+      position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 9999;
+    }
+    .login-box {
+      width: 400px; padding: 40px; background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-lg); border: 1px solid var(--border);
+    }
+    .login-brand { text-align: center; margin-bottom: 30px; }
+    .login-brand h1 { font-family: 'Syne', sans-serif; font-size: 24px; color: var(--text-primary); }
+    .login-brand p { color: var(--text-muted); font-size: 13px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 11.5px; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; }
+    .form-input { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; font-size: 14px; }
+    .form-input:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px var(--accent-glow); }
+    .btn-login { width: 100%; padding: 12px; background: var(--accent); color: white; border: none; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 10px; }
+    .btn-login:hover { background: var(--accent-dark); }
+    .login-error { color: var(--red); font-size: 12px; margin-top: 10px; text-align: center; }
+
+    /* ── APP SHELL ── */
+    .app {
+      display: none;
+      grid-template-columns: 240px 1fr;
+      height: 100vh;
+      overflow: hidden
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      background: var(--sidebar);
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--sidebar-border);
+      overflow: hidden;
+      position: relative
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 22px 18px 18px;
+      border-bottom: 1px solid var(--sidebar-border);
+      flex-shrink: 0
+    }
+
+    .logo-text {
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: white;
+      letter-spacing: -0.3px
+    }
+
+    .sidebar-nav {
+      padding: 14px 10px;
+      flex: 1;
+      overflow-y: auto
+    }
+
+    .nav-label {
+      font-size: 10px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.25);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 4px 8px 6px
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      color: var(--text-sidebar);
+      font-size: 13px;
+      font-weight: 400;
+      position: relative;
+      border: 1px solid transparent;
+      margin-bottom: 2px;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .nav-item:hover {
+      background: var(--sidebar-hover);
+      color: rgba(255, 255, 255, 0.8)
+    }
+
+    .nav-item.active {
+      background: var(--sidebar-active);
+      color: var(--text-sidebar-active);
+      border-color: rgba(99, 102, 241, 0.3);
+      font-weight: 500
+    }
+
+    .nav-item.active::before {
+      content: '';
+      position: absolute;
+      left: -1px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 3px;
+      height: 16px;
+      background: var(--accent);
+      border-radius: 0 3px 3px 0
+    }
+
+    .nav-icon {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+      opacity: 0.65
+    }
+
+    .nav-item.active .nav-icon {
+      opacity: 1
+    }
+
+    .sidebar-footer {
+      padding: 12px 10px;
+      border-top: 1px solid var(--sidebar-border);
+      flex-shrink: 0
+    }
+
+    .sidebar-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background 0.15s
+    }
+
+    .sidebar-user:hover {
+      background: var(--sidebar-hover)
+    }
+
+    .avatar-sm {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #a78bfa);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: white;
+      flex-shrink: 0
+    }
+
+    .user-name {
+      font-size: 12.5px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .user-role {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.35)
+    }
+
+    .user-info {
+      flex: 1;
+      min-width: 0
+    }
+
+    /* ── MAIN ── */
+    .main {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--bg)
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 13px 26px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0
+    }
+
+    .page-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.4px
+    }
+
+    .page-subtitle {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-top: 1px
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: auto;
+    }
+
+    .btn-logout {
+      padding: 6px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 12px; cursor: pointer; color: var(--red); background: var(--surface); font-weight: 600;
+    }
+
+    /* ── CONTENT ── */
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 22px 26px
+    }
+
+    .page {
+      display: none
+    }
+
+    .page.active {
+      display: block
+    }
+
+    /* ── BUTTONS ── */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 15px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-dark)
+    }
+
+    .btn-danger {
+      padding: 6px 12px; background: var(--red-light); color: var(--red); border: 1px solid var(--red-mid); border-radius: var(--radius-sm); cursor: pointer; font-size: 12px; font-weight: 500;
+    }
+    .btn-success {
+      padding: 6px 12px; background: var(--emerald-light); color: var(--emerald); border: 1px solid var(--emerald-mid); border-radius: var(--radius-sm); cursor: pointer; font-size: 12px; font-weight: 500;
+    }
+
+    /* ── EMPLOYEES ── */
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px
+    }
+
+    .page-h {
+      font-family: 'Syne', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.4px
+    }
+
+    .page-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px
+    }
+
+    .emp-table {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden
+    }
+
+    .emp-table-header {
+      display: grid;
+      grid-template-columns: 2fr 1.5fr 1fr 120px;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg)
+    }
+
+    .th {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.7px
+    }
+
+    .emp-row {
+      display: grid;
+      grid-template-columns: 2fr 1.5fr 1fr 120px;
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--border);
+      align-items: center;
+      transition: background 0.12s;
+    }
+
+    .emp-row:last-child {
+      border-bottom: none
+    }
+
+    .emp-row:hover {
+      background: var(--bg)
+    }
+
+    .emp-cell-name {
+      display: flex;
+      align-items: center;
+      gap: 9px
+    }
+
+    .avatar-emp {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #cbd5e1, #94a3b8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: white;
+      flex-shrink: 0
+    }
+
+    .emp-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary)
+    }
+
+    .emp-email {
+      font-size: 11px;
+      color: var(--text-muted)
+    }
+
+    .emp-td {
+      font-size: 12.5px;
+      color: var(--text-secondary)
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 500
+    }
+
+    .status-active {
+      background: var(--emerald-light);
+      color: #065f46
+    }
+    .status-active::before {
+      content: ''; width: 5px; height: 5px; background: var(--emerald); border-radius: 50%
+    }
+    .status-inactive {
+      background: var(--red-light);
+      color: var(--red);
+    }
+    .status-inactive::before {
+      content: ''; width: 5px; height: 5px; background: var(--red); border-radius: 50%
+    }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 17, 26, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 9000;
+      align-items: center;
+      justify-content: center
+    }
+
+    .modal-overlay.open {
+      display: flex
+    }
+
+    .modal {
+      background: var(--surface);
+      border-radius: 14px;
+      width: 420px;
+      max-width: 95vw;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+    }
+
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between; padding: 18px 20px 14px; border-bottom: 1px solid var(--border);
+    }
+
+    .modal-title { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: var(--text-primary) }
+
+    .modal-close {
+      width: 26px; height: 26px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted);
+    }
+    .modal-body { padding: 18px 20px }
+    .modal-footer { display: flex; gap: 8px; justify-content: flex-end; padding: 12px 20px; border-top: 1px solid var(--border); background: var(--bg); }
+  </style>
+</head>
+
+<body>
+
+  <!-- LOGIN SCREEN -->
+  <div id="loginScreen">
+    <div class="login-box">
+      <div class="login-brand">
+        <h1>Admin ProgettoAlex</h1>
+        <p>Effettua l'accesso come Amministratore</p>
+      </div>
+      <form id="loginForm" onsubmit="return handleLogin(event)">
+        <div class="form-group">
+          <label>Email Admin</label>
+          <input type="email" id="emailInput" class="form-input" placeholder="admin@test.com" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="passwordInput" class="form-input" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn-login" id="loginBtn">Accedi</button>
+        <div id="loginError" class="login-error" style="display:none"></div>
+      </form>
+    </div>
+  </div>
+
+  <div class="app" id="appScreen">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <span class="logo-text">Pannello Admin</span>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <div class="nav-label">Gestione</div>
+          <div class="nav-item active" data-page="employees">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 00-3-3.87" />
+              <path d="M16 3.13a4 4 0 010 7.75" />
+            </svg>
+            Dipendenti
+          </div>
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="avatar-sm">AD</div>
+          <div class="user-info">
+            <div class="user-name" id="currentUserName">Admin</div>
+            <div class="user-role">Amministratore</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+      <div class="topbar">
+        <div>
+          <div class="page-title">Gestione Dipendenti</div>
+          <div class="page-subtitle">Aggiungi, rimuovi o disattiva gli accessi per l'App Mobile</div>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn-logout" onclick="handleLogout()">Disconnetti</button>
+        </div>
+      </div>
+
+      <!-- CONTENT -->
+      <div class="content">
+
+        <!-- EMPLOYEES -->
+        <div class="page active" id="page-employees">
+          <div class="page-header">
+            <div>
+              <div class="page-h">I tuoi Dipendenti</div>
+              <div class="page-sub">Elenco degli utenti che possono accedere all'app.</div>
+            </div>
+            <button class="btn-primary" type="button" onclick="openModal()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              Nuovo Dipendente
+            </button>
+          </div>
+          <div class="emp-table">
+            <div class="emp-table-header">
+              <div class="th">Dipendente</div>
+              <div class="th">Ruolo</div>
+              <div class="th">Stato</div>
+              <div class="th">Azioni</div>
+            </div>
+            <div id="empList">
+              <div style="font-size:13px;color:var(--text-muted);padding:20px 16px;text-align:center;">Caricamento in corso...</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL NEW USER -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Aggiungi Dipendente</div>
+        <div class="modal-close" onclick="closeModal()">✕</div>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Nome Completo</label>
+          <input type="text" id="newName" class="form-input" placeholder="Es. Mario Rossi">
+        </div>
+        <div class="form-group">
+          <label>Email (Username per Login)</label>
+          <input type="email" id="newEmail" class="form-input" placeholder="mario@test.com">
+        </div>
+        <div class="form-group">
+          <label>Password Iniziale</label>
+          <input type="text" id="newPassword" class="form-input" placeholder="password123">
+        </div>
+        <div id="modalError" style="color:var(--red); font-size:12px; display:none"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-logout" type="button" style="border:none" onclick="closeModal()">Annulla</button>
+        <button class="btn-primary" type="button" onclick="createUser()">Crea Utente</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let token = localStorage.getItem('admin_token') || '';
+
+    // INIT
+    if (token) {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('appScreen').style.display = 'grid';
+      loadUsers();
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const btn = document.getElementById('loginBtn');
+      const errEl = document.getElementById('loginError');
+      btn.disabled = true; btn.textContent = 'Accesso...';
+      errEl.style.display = 'none';
+      
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: document.getElementById('emailInput').value.trim(),
+            password: document.getElementById('passwordInput').value
+          })
+        });
+        
+        if (!res.ok) throw new Error('Credenziali non valide o non sei admin');
+        
+        const data = await res.json();
+        
+        // Controlla se è admin
+        const payload = JSON.parse(atob(data.token.split('.')[1]));
+        const role = payload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+        if (role !== "Admin") throw new Error('Accesso negato: Solo Admin');
+
+        token = data.token;
+        localStorage.setItem('admin_token', token);
+        document.getElementById('currentUserName').textContent = payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"] || 'Admin';
+
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('appScreen').style.display = 'grid';
+        loadUsers();
+      } catch (err) {
+        errEl.textContent = err.message;
+        errEl.style.display = 'block';
+      } finally {
+        btn.disabled = false; btn.textContent = 'Accedi';
+      }
+    }
+
+    function handleLogout() {
+      token = '';
+      localStorage.removeItem('admin_token');
+      document.getElementById('appScreen').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'flex';
+      document.getElementById('passwordInput').value = '';
+    }
+
+    async function loadUsers() {
+      const list = document.getElementById('empList');
+      try {
+        const res = await fetch('/api/users', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (res.status === 401 || res.status === 403) { handleLogout(); return; }
+        
+        const users = await res.json();
+        list.innerHTML = '';
+        
+        if (users.length === 0) {
+            list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);">Nessun utente trovato.</div>';
+            return;
+        }
+
+        users.forEach(u => {
+          const initials = u.name.substring(0,2).toUpperCase();
+          const isActiveStr = u.isActive 
+            ? '<span class="status-pill status-active">Attivo</span>' 
+            : '<span class="status-pill status-inactive">Disattivato</span>';
+            
+          const actionBtn = u.role === 1 // Admin is 1
+            ? `<span style="font-size:11px;color:var(--text-muted)">Admin Master</span>`
+            : (u.isActive 
+                ? `<button class="btn-danger" onclick="toggleUser(${u.id})">Disattiva</button>`
+                : `<button class="btn-success" onclick="toggleUser(${u.id})">Riattiva</button>`);
+
+          const roleStr = u.role === 1 ? 'Amministratore' : 'Tecnico App';
+
+          list.innerHTML += `
+            <div class="emp-row">
+              <div class="emp-cell-name">
+                <div class="avatar-emp">${initials}</div>
+                <div>
+                  <div class="emp-name">${u.name}</div>
+                  <div class="emp-email">${u.email}</div>
+                </div>
+              </div>
+              <div class="emp-td">${roleStr}</div>
+              <div class="emp-td">${isActiveStr}</div>
+              <div class="emp-td">${actionBtn}</div>
+            </div>
+          `;
+        });
+      } catch (err) {
+        list.innerHTML = '<div style="color:var(--red);padding:20px;text-align:center;">Errore di caricamento.</div>';
+      }
+    }
+
+    async function toggleUser(id) {
+      if (!confirm("Sicuro di voler cambiare lo stato di questo utente?")) return;
+      try {
+        const res = await fetch('/api/users/' + id, {
+          method: 'DELETE',
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (res.ok) {
+          loadUsers();
+        } else {
+          alert('Errore durante la modifica dello stato.');
+        }
+      } catch (err) {
+        alert('Errore di connessione.');
+      }
+    }
+
+    // Modal
+    function openModal() {
+      document.getElementById('newName').value = '';
+      document.getElementById('newEmail').value = '';
+      document.getElementById('newPassword').value = '';
+      document.getElementById('modalError').style.display = 'none';
+      document.getElementById('modal-overlay').classList.add('open');
+    }
+    function closeModal() {
+      document.getElementById('modal-overlay').classList.remove('open');
+    }
+
+    async function createUser() {
+      const name = document.getElementById('newName').value.trim();
+      const email = document.getElementById('newEmail').value.trim();
+      const password = document.getElementById('newPassword').value;
+      const errEl = document.getElementById('modalError');
+      
+      if (!name || !email || !password) {
+        errEl.textContent = 'Compila tutti i campi.';
+        errEl.style.display = 'block';
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/users', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token 
+          },
+          body: JSON.stringify({ name, email, password })
+        });
+        
+        if (!res.ok) {
+          const text = await res.text();
+          throw new Error(text || 'Errore durante la creazione.');
+        }
+        
+        closeModal();
+        loadUsers();
+      } catch (err) {
+        errEl.textContent = err.message;
+        errEl.style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>

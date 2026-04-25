@@ -123,7 +123,7 @@ app.UseStaticFiles();
 // Redirect root to the admin dashboard
 app.MapGet("/", context =>
 {
-    context.Response.Redirect("/admin.html");
+    context.Response.Redirect("/dashboardnuova.html");
     return Task.CompletedTask;
 });
 
