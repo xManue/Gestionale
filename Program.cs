@@ -120,6 +120,13 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
+// Redirect root to the dashboard
+app.MapGet("/", context =>
+{
+    context.Response.Redirect("/interventions.html");
+    return Task.CompletedTask;
+});
+
 app.UseCors("AllowAll");
 
 app.UseAuthentication();
