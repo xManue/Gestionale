@@ -1,0 +1,5 @@
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+COPY . .
+RUN dotnet publish Backend.csproj -c Release -o out
+ENTRYPOINT ["dotnet", "out/Backend.dll"]
