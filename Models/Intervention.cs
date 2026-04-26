@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,8 +8,8 @@ namespace Backend.Models
     {
         public int Id { get; set; }
         public string TitleOverride { get; set; } = null!;
-        public int WorkTypeId { get; set; }
-        public WorkType WorkType { get; set; } = null!;
+        public int? WorkTypeId { get; set; }
+        public WorkType? WorkType { get; set; } = null;
         public DateTimeOffset DateStart { get; set; }
         public DateTimeOffset? DateEnd { get; set; }
         public string? Location { get; set; }

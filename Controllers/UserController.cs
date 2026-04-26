@@ -64,19 +64,26 @@ namespace Backend.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("/api/users/{id}")]
-        public ActionResult ToggleUserStatus(int id)
+        public ActionResult DeleteUser(int id)
         {
             var user = _appDbContext.Users.FirstOrDefault(u => u.Id == id);
             if (user == null)
                 return NotFound();
 
             if (user.Role == RoleEnum.Admin && user.Email == "admin@test.com")
-                return BadRequest("Cannot deactivate the main admin");
+                return BadRequest("Cannot delete the main admin");
 
-            user.IsActive = !user.IsActive;
+            // Cleanup dependencies to avoid FK errors
+            var assignments = _appDbContext.Assignments.Where(a => a.UserId == id).ToList();
+            _appDbContext.Assignments.RemoveRange(assignments);
+
+            var interventions = _appDbContext.Interventions.Where(i => i.CompletedByUserId == id).ToList();
+            foreach (var i in interventions) i.CompletedByUserId = null;
+
+            _appDbContext.Users.Remove(user);
             _appDbContext.SaveChanges();
 
-            return Ok(new { IsActive = user.IsActive });
+            return Ok(new { Deleted = true });
         }
 
         [Authorize]

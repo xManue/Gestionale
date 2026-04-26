@@ -102,9 +102,9 @@ namespace Backend.Controllers
             if (wt == null)
                 return NotFound();
 
-            var usedByInterventions = _appDbContext.Interventions.Any(i => i.WorkTypeId == id);
-            if (usedByInterventions)
-                return BadRequest("Template usato da interventi: non eliminabile");
+            // Nullify references in interventions
+            var interventions = _appDbContext.Interventions.Where(i => i.WorkTypeId == id).ToList();
+            foreach (var i in interventions) i.WorkTypeId = null;
 
             _appDbContext.WorkTypeMaterials.RemoveRange(wt.Materials);
             _appDbContext.WorkTypeTools.RemoveRange(wt.Tools);

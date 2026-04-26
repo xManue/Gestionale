@@ -1,4 +1,4 @@
-﻿using Backend.DTO;
+using Backend.DTO;
 using Backend.Models;
 
 namespace Backend.Services
@@ -49,6 +49,18 @@ namespace Backend.Services
                 TitleOverride = dto.TitleOverride,
                 DescriptionOverride = dto.DescriptionOverride
             };
+
+            if (dto.UserIds != null && dto.UserIds.Any())
+            {
+                foreach (var userId in dto.UserIds)
+                {
+                    intervention.Assignments.Add(new Assignment
+                    {
+                        UserId = userId
+                    });
+                }
+                intervention.Stato = InterventionStatus.Assigned;
+            }
 
             _appDbContext.Interventions.Add(intervention);
             _appDbContext.SaveChanges();

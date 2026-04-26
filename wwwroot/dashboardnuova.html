@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gestionale - Il Capo</title>
+  <title>Gestionale - Amministratore</title>
   <link
     href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap"
     rel="stylesheet">
@@ -408,20 +408,72 @@
       border: 1.5px solid white
     }
 
-    .avatar-topbar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #6366f1, #a78bfa);
+    }
+
+    /* ── PROFILE DROPDOWN ── */
+    .profile-wrap {
+      position: relative;
+    }
+
+    .profile-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 200px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      display: none;
+      z-index: 10000;
+      overflow: hidden;
+    }
+
+    .profile-dropdown.show {
+      display: block;
+      animation: fadeIn 0.15s ease;
+    }
+
+    .dropdown-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+
+    .dropdown-name {
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--text-primary);
+    }
+
+    .dropdown-role {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .dropdown-item {
+      padding: 10px 16px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      font-weight: 600;
-      color: white;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--text-secondary);
       cursor: pointer;
-      border: 2px solid var(--accent-light);
-      flex-shrink: 0
+      transition: background 0.15s;
+    }
+
+    .dropdown-item:hover {
+      background: var(--bg);
+      color: var(--text-primary);
+    }
+
+    .dropdown-item.logout {
+      color: var(--red);
+      border-top: 1px solid var(--border);
+    }
+
+    .dropdown-item.logout:hover {
+      background: var(--red-light);
     }
 
     /* ── CONTENT ── */
@@ -1818,7 +1870,7 @@
               <path d="M23 21v-2a4 4 0 00-3-3.87" />
               <path d="M16 3.13a4 4 0 010 7.75" />
             </svg>
-            Schiavi
+            Dipendenti
           </div>
         </div>
         <div class="nav-section" style="margin-top:6px">
@@ -1839,7 +1891,7 @@
           <div class="avatar-sm">JA</div>
           <div class="user-info">
             <div class="user-name">Jeminaj </div>
-            <div class="user-role">Il Capo</div>
+            <div class="user-role">Amministratore</div>
           </div>
           <span class="user-dots">···</span>
         </div>
@@ -1851,7 +1903,7 @@
       <div class="topbar">
         <div>
           <div class="page-title" id="topbar-title">Situazione Generale</div>
-          <div class="page-subtitle" id="topbar-subtitle">Ciao Capo, ecco i casini di oggi:</div>
+          <div class="page-subtitle" id="topbar-subtitle">Bentornato, ecco la situazione di oggi:</div>
         </div>
         <div class="search-wrap">
           <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -1878,8 +1930,23 @@
               <line x1="12" y1="16" x2="12.01" y2="16" />
             </svg>
           </div>
-          <div class="avatar-topbar" id="topbar-avatar">AD</div>
-          <button onclick="doLogout()" style="padding:5px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:11px;cursor:pointer;color:#ef4444;background:white;font-weight:600">Esci</button>
+          <div class="profile-wrap">
+            <div class="avatar-topbar" id="topbar-avatar">AD</div>
+            <div class="profile-dropdown" id="profile-dropdown">
+              <div class="dropdown-header">
+                <div class="dropdown-name" id="dropdown-name">Admin</div>
+                <div class="dropdown-role">Amministratore</div>
+              </div>
+              <div class="dropdown-item" onclick="navigate('settings')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                Impostazioni
+              </div>
+              <div class="dropdown-item logout" onclick="doLogout()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 01-2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                Esci
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1981,10 +2048,7 @@
                 </svg></div>
             </div>
             <div style="display:flex;gap:8px;align-items:center">
-              <div class="cal-view-toggle">
-                <button class="view-btn active" type="button">Mese</button>
-                <button class="view-btn" type="button">Settimana</button>
-              </div>
+
               <button class="btn-primary" type="button" id="cal-new-btn">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
                   stroke-linejoin="round">
@@ -2070,8 +2134,8 @@
         <div class="page" id="page-employees">
           <div class="page-header">
             <div>
-              <div class="page-h">Schiavi</div>
-              <div class="page-sub">Gestisci i tuoi schiavi</div>
+              <div class="page-h">Dipendenti</div>
+              <div class="page-sub">Gestisci i tuoi dipendenti</div>
             </div>
             <button class="btn-primary" type="button" id="employees-new-btn">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
@@ -2079,7 +2143,7 @@
                 <line x1="12" y1="5" x2="12" y2="19" />
                 <line x1="5" y1="12" x2="19" y2="12" />
               </svg>
-              Aggiungi Schiavo
+              Aggiungi Dipendente
             </button>
           </div>
           <div class="emp-table">
@@ -2230,14 +2294,14 @@
         </div>
         <div class="form-row">
           <label>Indirizzo / Posizione</label>
-          <input class="form-input" type="text" placeholder="es. Via Garibaldi 1, Milano">
+          <input class="form-input" type="text" id="modal-location" placeholder="es. Via Garibaldi 1, Milano">
         </div>
         <div class="form-row">
           <label>Urgenza</label>
-          <select class="form-input">
-            <option>Normale</option>
-            <option>Emergenza Subito</option>
-            <option>Bassa (con calma)</option>
+          <select class="form-input" id="modal-priority">
+            <option value="1">Normale</option>
+            <option value="3">Emergenza Subito</option>
+            <option value="0">Bassa (con calma)</option>
           </select>
         </div>
         <div class="form-row">
@@ -2248,7 +2312,7 @@
         </div>
         <div class="form-row">
           <label>Cosa c'è da fare</label>
-          <textarea class="form-input" placeholder="Spiega bene il problema..."></textarea>
+          <textarea class="form-input" id="modal-desc" placeholder="Spiega bene il problema..."></textarea>
         </div>
         <div class="form-row">
           <label>Materiali e Attrezzi</label>
@@ -2257,7 +2321,7 @@
         </div>
         <div class="form-row">
           <label>Note Extra</label>
-          <textarea class="form-input" placeholder="Citofoni rotti, attenti al cane..."></textarea>
+          <textarea class="form-input" id="modal-notes" placeholder="Citofoni rotti, attenti al cane..."></textarea>
         </div>
       </div>
       <div class="modal-footer">
@@ -2277,7 +2341,7 @@
   <div class="modal-overlay" id="emp-modal-overlay">
     <div class="modal">
       <div class="modal-header">
-        <div class="modal-title">Aggiungi Schiavo</div>
+        <div class="modal-title">Aggiungi Dipendente</div>
         <div class="modal-close" id="emp-modal-close-btn">✕</div>
       </div>
       <div class="modal-body">
@@ -2397,12 +2461,15 @@
       }
 
       window.doLogout = function doLogout() {
+        if (!token && !jwtPayload) return;
         token = '';
         jwtPayload = null;
         localStorage.removeItem(ADMIN_TOKEN_KEY);
         showLogin();
         const passEl = document.getElementById('loginPass');
         if (passEl) passEl.value = '';
+        const dropdown = document.getElementById('profile-dropdown');
+        if (dropdown) dropdown.classList.remove('show');
       };
 
       async function handleLogin(e) {
@@ -2449,6 +2516,8 @@
         const initials = name.trim().split(/\s+/).slice(0, 2).map(s => s[0] || '').join('').toUpperCase() || 'AD';
         const avatarTop = document.getElementById('topbar-avatar');
         if (avatarTop) avatarTop.textContent = initials.slice(0, 2);
+        const dropName = document.getElementById('dropdown-name');
+        if (dropName) dropName.textContent = name;
         const sideName = document.querySelector('.sidebar-footer .user-name');
         if (sideName) sideName.textContent = name;
       }
@@ -2567,6 +2636,7 @@
       async function loadInterventions() {
         const raw = await apiJson('/api/intervention/getall');
         const list = Array.isArray(raw) ? raw : [];
+        window.allJobsList = list;
 
         interventions = {};
         const now = new Date();
@@ -2685,6 +2755,51 @@
               });
           }
         }
+        
+        renderJobs(list, document.querySelector('.jobs-filters .filter-chip.active')?.textContent || 'Tutti');
+      }
+
+      function renderJobs(list, filter) {
+        const jobsListEl = document.querySelector('.jobs-list');
+        if (!jobsListEl) return;
+
+        let filtered = list;
+        const now = new Date();
+        
+        if (filter === 'In Programma') filtered = list.filter(it => it.status === 'Planned');
+        else if (filter === 'In Corso') filtered = list.filter(it => it.status === 'InProgress' || it.status === 'Assigned');
+        else if (filter === 'Finiti') filtered = list.filter(it => it.status === 'Completed');
+        else if (filter === 'In Ritardo') filtered = list.filter(it => it.status !== 'Completed' && it.dateEnd && new Date(it.dateEnd) < now);
+
+        jobsListEl.innerHTML = '';
+        if (filtered.length === 0) {
+          jobsListEl.innerHTML = '<div style="font-size:13px;color:var(--text-muted);padding:20px;text-align:center;">Nessun lavoro registrato in questa lista.</div>';
+          return;
+        }
+
+        const sorted = [...filtered].sort((a,b) => new Date(b.dateStart).getTime() - new Date(a.dateStart).getTime());
+        sorted.forEach(it => {
+          const chip = statusChipClass(it.status);
+          const start = new Date(it.dateStart);
+          const dStr = start.toLocaleDateString() + ' ' + pad(start.getHours()) + ':' + pad(start.getMinutes());
+          
+          const card = document.createElement('div');
+          card.className = 'activity-item';
+          card.style.marginBottom = '10px';
+          card.innerHTML = `
+            <div class="activity-color" style="background: var(--accent)"></div>
+            <div class="activity-info">
+              <div class="activity-name" style="font-size: 14px; margin-bottom: 4px;">${escapeHtml(it.title || 'Intervento')}</div>
+              <div class="activity-meta">
+                <span style="font-weight:600; color:var(--text-primary)">${dStr}</span>
+                <span>${escapeHtml(it.location || 'Nessun indirizzo')}</span>
+                <span class="${chip.cls}" style="padding:2px 8px;border-radius:6px;font-size:11px;">${escapeHtml(it.status || '')}</span>
+              </div>
+              ${it.description ? `<div style="font-size:12px; color:var(--text-muted); margin-top:6px; white-space:pre-wrap">${escapeHtml(it.description)}</div>` : ''}
+            </div>
+          `;
+          jobsListEl.appendChild(card);
+        });
       }
 
       async function bootstrapData() {
@@ -2785,7 +2900,7 @@
         calendar: { title: 'Il Calendario', subtitle: 'Appuntamenti e chiamate' },
         jobs: { title: 'I Lavori da Fare', subtitle: 'Elenco dei lavori in programma e quelli finiti' },
         worktypes: { title: 'Template Lavori', subtitle: "Modelli pronti all'uso" },
-        employees: { title: 'Schiavi', subtitle: 'Gestisci i tuoi schiavi' },
+        employees: { title: 'Dipendenti', subtitle: 'Gestisci i tuoi dipendenti' },
         settings: { title: 'Impostazioni', subtitle: 'Come ti piace organizzare il lavoro' }
       };
 
@@ -2855,6 +2970,19 @@
         if (!workTypeId) { alert('Seleziona un tipo di lavoro'); return; }
         if (!date || !time) { alert('Inserisci data e ora'); return; }
 
+        const locVal = document.getElementById('modal-location').value.trim() || null;
+        const prioVal = parseInt(document.getElementById('modal-priority').value, 10) || 1;
+        const descRaw = document.getElementById('modal-desc').value.trim();
+        const mat = document.getElementById('modal-materials').value.trim();
+        const notes = document.getElementById('modal-notes').value.trim();
+
+        let finalDesc = descRaw;
+        if (mat) finalDesc += (finalDesc ? '\n\n' : '') + 'Materiali/Attrezzi:\n' + mat;
+        if (notes) finalDesc += (finalDesc ? '\n\n' : '') + 'Note Extra:\n' + notes;
+        if (!finalDesc) finalDesc = null;
+
+        const uIds = Array.from(document.querySelectorAll('#modal-employees .ms-tag.selected')).map(el => parseInt(el.dataset.userId, 10));
+
         // create DateStart as local datetime -> ISO
         const isoStart = new Date(date + 'T' + time + ':00').toISOString();
 
@@ -2865,10 +2993,11 @@
             body: JSON.stringify({
               workTypeId,
               dateStart: isoStart,
-              location: null,
+              location: locVal,
               titleOverride: null,
-              descriptionOverride: null,
-              priority: 0
+              descriptionOverride: finalDesc,
+              priority: prioVal,
+              userIds: uIds
             })
           });
           closeModal();
@@ -2879,7 +3008,7 @@
           alert(err && err.message ? err.message : 'Errore durante il salvataggio');
         }
       });
-      modalOverlay.addEventListener('click', function (e) { if (e.target === modalOverlay) closeModal(); });
+
 
       /* buttons that open modal */
       document.getElementById('cal-new-btn').addEventListener('click', function () { openModal(); });
@@ -2899,7 +3028,7 @@
       document.getElementById('employees-new-btn').addEventListener('click', openEmpModal);
       document.getElementById('emp-modal-close-btn').addEventListener('click', closeEmpModal);
       document.getElementById('emp-modal-cancel-btn').addEventListener('click', closeEmpModal);
-      empOverlay.addEventListener('click', function (e) { if (e.target === empOverlay) closeEmpModal(); });
+
       document.getElementById('emp-modal-save-btn').addEventListener('click', async function () {
         const name = document.getElementById('emp-new-name').value.trim();
         const email = document.getElementById('emp-new-email').value.trim();
@@ -2944,7 +3073,7 @@
       if (emptyCard) emptyCard.addEventListener('click', openWtModal);
       document.getElementById('wt-modal-close-btn').addEventListener('click', closeWtModal);
       document.getElementById('wt-modal-cancel-btn').addEventListener('click', closeWtModal);
-      wtOverlay.addEventListener('click', function (e) { if (e.target === wtOverlay) closeWtModal(); });
+
       document.getElementById('wt-modal-save-btn').addEventListener('click', async function () {
         const name = document.getElementById('wt-new-name').value.trim();
         const description = document.getElementById('wt-new-desc').value.trim();
@@ -2991,6 +3120,9 @@
         chip.addEventListener('click', function () {
           document.querySelectorAll('.filter-chip').forEach(function (c) { c.classList.remove('active'); });
           this.classList.add('active');
+          if (window.allJobsList) {
+            renderJobs(window.allJobsList, this.textContent.trim());
+          }
         });
       });
 
@@ -3099,6 +3231,59 @@
         }
       } else {
         showLogin();
+      }
+
+      /* ── SEARCH LOGIC ── */
+      const searchInput = document.querySelector('.search-input');
+      if (searchInput) {
+        searchInput.addEventListener('input', function() {
+          const q = this.value.toLowerCase().trim();
+          const activePage = document.querySelector('.page.active');
+          if (!activePage) return;
+
+          if (activePage.id === 'page-dashboard') {
+             activePage.querySelectorAll('.activity-item').forEach(item => {
+               const text = item.textContent.toLowerCase();
+               item.style.display = text.includes(q) ? 'flex' : 'none';
+             });
+          } else if (activePage.id === 'page-calendar') {
+             // Calendar is harder, maybe just highlight or filter labels?
+             // For now let's filter chips inside days
+             activePage.querySelectorAll('.intervention-chip').forEach(chip => {
+               const text = chip.textContent.toLowerCase();
+               chip.style.opacity = text.includes(q) ? '1' : '0.2';
+             });
+          } else if (activePage.id === 'page-jobs') {
+             activePage.querySelectorAll('.activity-item').forEach(row => {
+               const text = row.textContent.toLowerCase();
+               row.style.display = text.includes(q) ? 'flex' : 'none';
+             });
+          } else if (activePage.id === 'page-worktypes') {
+             activePage.querySelectorAll('.wt-card').forEach(card => {
+               if (card.id === 'worktypesEmptyCard') return;
+               const text = card.textContent.toLowerCase();
+               card.style.display = text.includes(q) ? 'block' : 'none';
+             });
+          } else if (activePage.id === 'page-employees') {
+             activePage.querySelectorAll('.emp-row').forEach(row => {
+               const text = row.textContent.toLowerCase();
+               row.style.display = text.includes(q) ? 'grid' : 'none';
+             });
+          }
+        });
+      }
+
+      /* ── DROPDOWN TOGGLE ── */
+      const avatarBtn = document.getElementById('topbar-avatar');
+      const profileDropdown = document.getElementById('profile-dropdown');
+      if (avatarBtn && profileDropdown) {
+        avatarBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          profileDropdown.classList.toggle('show');
+        });
+        document.addEventListener('click', function() {
+          profileDropdown.classList.remove('show');
+        });
       }
 
       renderCalendar();

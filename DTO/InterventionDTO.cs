@@ -1,4 +1,4 @@
-﻿using Backend.Models;
+using Backend.Models;
 
 namespace Backend.DTO
 {
@@ -11,5 +11,6 @@ namespace Backend.DTO
         public string? Location { get; set; }
         public string? TitleOverride { get; set; }
         public string? DescriptionOverride { get; set; }
+        public List<int>? UserIds { get; set; }
     }
 }
