@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Configure port for Render deployment
 var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
-builder.WebHost.UseUrls($"http://*:{port}");
+builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 
 builder.Services.AddHttpLogging(logging =>
 {
@@ -54,7 +54,12 @@ builder.Services.AddAuthentication(options =>
     };
 });
 builder.Services.AddAuthorization();
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(
+            new System.Text.Json.Serialization.JsonStringEnumConverter());
+    });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -115,8 +120,6 @@ using (var scope = app.Services.CreateScope())
         db.SaveChanges();
     }
 }
-app.UseMiddleware<MiddleWare>();
-
 // Configure the HTTP request pipeline.
 app.UseHttpLogging();
 
@@ -124,7 +127,7 @@ app.UseHttpLogging();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
+// HTTPS is handled by Render's reverse proxy — no redirect needed here
 
 app.UseStaticFiles();
 
@@ -136,6 +139,9 @@ app.MapGet("/", context =>
 });
 
 app.UseCors("AllowAll");
+
+// Error-handling middleware AFTER CORS so error responses include CORS headers
+app.UseMiddleware<MiddleWare>();
 
 app.UseAuthentication();
 app.UseAuthorization();

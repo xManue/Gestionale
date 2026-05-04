@@ -22,7 +22,8 @@ COPY --from=build /app/publish .
 # Se vuoi includere il db iniziale scommenta la riga sotto:
 COPY --from=build /src/app.db .
 
-EXPOSE 80
 EXPOSE 5000
+
+ENV ASPNETCORE_URLS=http://0.0.0.0:5000
 
 ENTRYPOINT ["dotnet", "Backend.dll"]

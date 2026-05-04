@@ -1,5 +1,6 @@
 using Backend.DTO;
 using Backend.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Services
 {
@@ -25,8 +26,6 @@ namespace Backend.Services
             if (dto.DateStart == default)
                 throw new ValidationException("Data di inizio obbligatoria");
 
-            if (dto.DateStart < DateTimeOffset.UtcNow)
-                throw new ValidationException("La data di inizio non può essere nel passato");
 
             if (dto.DateEnd.HasValue && dto.DateEnd < dto.DateStart)
                 throw new ValidationException("La data di fine non può essere precedente alla data di inizio");
@@ -66,6 +65,87 @@ namespace Backend.Services
             _appDbContext.SaveChanges();
 
             return intervention.Id;
+        }
+
+        public void UpdateIntervention(int id, UpdateInterventionDTO dto)
+        {
+            var intervention = _appDbContext.Interventions
+                .Include(i => i.Assignments)
+                .SingleOrDefault(i => i.Id == id);
+
+            if (intervention == null)
+                throw new NotFoundException("Intervento non trovato");
+
+            // Update only provided fields
+            if (dto.TitleOverride != null)
+                intervention.TitleOverride = dto.TitleOverride;
+
+            if (dto.DescriptionOverride != null)
+                intervention.DescriptionOverride = dto.DescriptionOverride;
+
+            if (dto.Location != null)
+                intervention.Location = dto.Location;
+
+            if (dto.Priority.HasValue)
+                intervention.Priority = dto.Priority.Value;
+
+            if (dto.DateStart.HasValue)
+                intervention.DateStart = dto.DateStart.Value;
+
+            if (dto.DateEnd.HasValue)
+                intervention.DateEnd = dto.DateEnd.Value;
+
+            // Update assignments if provided
+            if (dto.UserIds != null)
+            {
+                // Remove old assignments
+                _appDbContext.Assignments.RemoveRange(intervention.Assignments);
+
+                // Add new assignments
+                foreach (var userId in dto.UserIds)
+                {
+                    intervention.Assignments.Add(new Assignment
+                    {
+                        InterventionId = id,
+                        UserId = userId
+                    });
+                }
+
+                // Update status: if we have assigned users and status is still Planned, move to Assigned
+                if (dto.UserIds.Any() && intervention.Stato == InterventionStatus.Planned)
+                {
+                    intervention.Stato = InterventionStatus.Assigned;
+                }
+                // If no users assigned and status is Assigned, move back to Planned
+                else if (!dto.UserIds.Any() && intervention.Stato == InterventionStatus.Assigned)
+                {
+                    intervention.Stato = InterventionStatus.Planned;
+                }
+            }
+
+            _appDbContext.SaveChanges();
+        }
+
+        public void DeleteIntervention(int id)
+        {
+            var intervention = _appDbContext.Interventions
+                .Include(i => i.Assignments)
+                .Include(i => i.Materials)
+                .Include(i => i.Logs)
+                .Include(i => i.ChecklistItems)
+                .SingleOrDefault(i => i.Id == id);
+
+            if (intervention == null)
+                throw new NotFoundException("Intervento non trovato");
+
+            // Remove all related records
+            _appDbContext.Assignments.RemoveRange(intervention.Assignments);
+            _appDbContext.InterventionMaterials.RemoveRange(intervention.Materials);
+            _appDbContext.InterventionLogs.RemoveRange(intervention.Logs);
+            _appDbContext.RemoveRange(intervention.ChecklistItems);
+            _appDbContext.Interventions.Remove(intervention);
+
+            _appDbContext.SaveChanges();
         }
 
         public void ChangeInterventionStatus(int id, ChangeStatusDTO changeStatusDTO)

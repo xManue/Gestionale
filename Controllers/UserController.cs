@@ -7,7 +7,6 @@ using System.Security.Claims;
 namespace Backend.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
         private readonly AppDbContext _appDbContext;
@@ -71,7 +70,7 @@ namespace Backend.Controllers
                 return NotFound();
 
             if (user.Role == RoleEnum.Admin && user.Email == "admin@test.com")
-                return BadRequest("Cannot delete the main admin");
+                return BadRequest("Non è possibile eliminare l'amministratore principale");
 
             // Cleanup dependencies to avoid FK errors
             var assignments = _appDbContext.Assignments.Where(a => a.UserId == id).ToList();
@@ -86,8 +85,46 @@ namespace Backend.Controllers
             return Ok(new { Deleted = true });
         }
 
+        [Authorize(Roles = "Admin")]
+        [HttpPatch("/api/users/{id}/toggle-status")]
+        public ActionResult ToggleUserStatus(int id)
+        {
+            var user = _appDbContext.Users.FirstOrDefault(u => u.Id == id);
+            if (user == null)
+                return NotFound();
+
+            if (user.Role == RoleEnum.Admin && user.Email == "admin@test.com")
+                return BadRequest("Non è possibile disattivare l'amministratore principale");
+
+            user.IsActive = !user.IsActive;
+            _appDbContext.SaveChanges();
+
+            return Ok(new { id = user.Id, isActive = user.IsActive });
+        }
+
+        // IMPORTANT: /api/users/me MUST be declared BEFORE /api/users/{id}
+        // to prevent the router from matching "me" as an {id} parameter.
         [Authorize]
-        [HttpGet("/api/users/{id}")]
+        [HttpGet("/api/users/me")]
+        public ActionResult<UserDTO> GetCurrentUser()
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+            var user = _appDbContext.Users.FirstOrDefault(u => u.IsActive && u.Id == userId);
+            if (user == null)
+                return NotFound();
+
+            var result = new UserDTO
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email
+            };
+            return Ok(result);
+        }
+
+        [Authorize]
+        [HttpGet("/api/users/{id:int}")]
         public ActionResult<UserDTO> GetUser(int id)
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
@@ -109,25 +146,6 @@ namespace Backend.Controllers
                 Email = user.Email,
                 Role = user.Role
             });
-        }
-
-        [Authorize]
-        [HttpGet("/api/users/me")]
-        public ActionResult<UserDTO> GetCurrentUser()
-        {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-
-            var user = _appDbContext.Users.FirstOrDefault(u => u.IsActive && u.Id == userId);
-            if (user == null)
-                return NotFound();
-
-            var result = new UserDTO
-            {
-                Id = user.Id,
-                Name = user.Name,
-                Email = user.Email
-            };
-            return Ok(result);
         }
     }
 }

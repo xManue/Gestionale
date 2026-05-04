@@ -8,14 +8,9 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "Email",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "Password",
-        "Type": "System.String",
-        "IsRequired": false
+        "Name": "request",
+        "Type": "Backend.DTO.LoginRequest",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": [
@@ -39,19 +34,9 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "Name",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "Email",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "Password",
-        "Type": "System.String",
-        "IsRequired": false
+        "Name": "dto",
+        "Type": "Backend.DTO.RegisterDTO",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -85,39 +70,46 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "WorkTypeId",
+        "Name": "interventionDTO",
+        "Type": "Backend.DTO.InterventionDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Backend.Controllers.InterventionController",
+    "Method": "UpdateIntervention",
+    "RelativePath": "api/intervention/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
         "Type": "System.Int32",
-        "IsRequired": false
+        "IsRequired": true
       },
       {
-        "Name": "DateStart",
-        "Type": "System.DateTimeOffset",
-        "IsRequired": false
-      },
+        "Name": "dto",
+        "Type": "Backend.DTO.UpdateInterventionDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Backend.Controllers.InterventionController",
+    "Method": "DeleteIntervention",
+    "RelativePath": "api/intervention/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
       {
-        "Name": "DateEnd",
-        "Type": "System.Nullable\u00601[[System.DateTimeOffset, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": false
-      },
-      {
-        "Name": "Priority",
-        "Type": "Backend.Models.InterventionPriority",
-        "IsRequired": false
-      },
-      {
-        "Name": "Location",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "TitleOverride",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "DescriptionOverride",
-        "Type": "System.String",
-        "IsRequired": false
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -223,19 +215,9 @@
         "IsRequired": true
       },
       {
-        "Name": "InterventionId",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "newStatus",
-        "Type": "Backend.Models.InterventionStatus",
-        "IsRequired": false
-      },
-      {
-        "Name": "UserId",
-        "Type": "System.Int32",
-        "IsRequired": false
+        "Name": "changeStatusDTO",
+        "Type": "Backend.DTO.ChangeStatusDTO",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -259,6 +241,48 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "Backend.Controllers.UserController",
+    "Method": "CreateUser",
+    "RelativePath": "api/users",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Backend.DTO.RegisterDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Backend.ModelsDTO.UserDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Backend.Controllers.UserController",
+    "Method": "DeleteUser",
+    "RelativePath": "api/users/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "Backend.Controllers.UserController",
@@ -288,6 +312,22 @@
   },
   {
     "ContainingType": "Backend.Controllers.UserController",
+    "Method": "ToggleUserStatus",
+    "RelativePath": "api/users/{id}/toggle-status",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Backend.Controllers.UserController",
     "Method": "GetCurrentUser",
     "RelativePath": "api/users/me",
     "HttpMethod": "GET",
@@ -305,5 +345,67 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "Backend.Controllers.WorkTypeController",
+    "Method": "GetAll",
+    "RelativePath": "api/worktypes",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[Backend.DTO.WorkTypeDTO, Backend, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Backend.Controllers.WorkTypeController",
+    "Method": "Create",
+    "RelativePath": "api/worktypes",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "Backend.DTO.CreateWorkTypeDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Backend.DTO.WorkTypeDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Backend.Controllers.WorkTypeController",
+    "Method": "Delete",
+    "RelativePath": "api/worktypes/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   }
 ]

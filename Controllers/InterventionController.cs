@@ -106,10 +106,41 @@ namespace Backend.Controllers
             return Ok(new { id, status = "Planned" });
         }
 
+        [Authorize(Roles = "Admin")]
+        [HttpPut("/api/intervention/{id}")]
+        public ActionResult UpdateIntervention(int id, [FromBody] UpdateInterventionDTO dto)
+        {
+            _interventionService.UpdateIntervention(id, dto);
+            _logger.LogInformation("Intervention {InterventionId} updated", id);
+
+            var updated = _appDbContext.Interventions
+                .Include(i => i.Assignments)
+                .ThenInclude(a => a.User)
+                .FirstOrDefault(i => i.Id == id);
+
+            return Ok(ToResponseDTO(updated!));
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("/api/intervention/{id}")]
+        public ActionResult DeleteIntervention(int id)
+        {
+            _interventionService.DeleteIntervention(id);
+            _logger.LogInformation("Intervention {InterventionId} deleted", id);
+            return Ok(new { Deleted = true });
+        }
+
         [Authorize]
         [HttpPatch("/api/update/status/{id}")]
         public ActionResult ChangeInterventionStatus(int id, [FromBody] ChangeStatusDTO changeStatusDTO)
         {
+            // Extract the actual userId from the JWT claim so we track who completed
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim != null)
+            {
+                changeStatusDTO.UserId = int.Parse(userIdClaim.Value);
+            }
+
             _interventionService.ChangeInterventionStatus(id, changeStatusDTO);
             _logger.LogInformation("Intervention {InterventionId} status changed to {NewStatus}", id, changeStatusDTO.newStatus);
             return Ok();
@@ -142,6 +173,7 @@ namespace Backend.Controllers
         /// <summary>
         /// Maps an EF Intervention entity to a clean response DTO.
         /// Normalizes field names: TitleOverride→Title, Stato→Status, DescriptionOverride→Description.
+        /// Includes assigned users.
         /// </summary>
         private static InterventionResponseDTO ToResponseDTO(Intervention intervention)
         {
@@ -156,7 +188,15 @@ namespace Backend.Controllers
                 DateStart = intervention.DateStart,
                 DateEnd = intervention.DateEnd,
                 CreatedAt = intervention.CreatedAt,
-                CompletedAt = intervention.CompletedAt
+                CompletedAt = intervention.CompletedAt,
+                AssignedTo = intervention.Assignments
+                    .Where(a => a.User != null)
+                    .Select(a => new AssignedUserDTO
+                    {
+                        Id = a.User.Id,
+                        Name = a.User.Name
+                    })
+                    .ToList()
             };
         }
     }

@@ -408,6 +408,26 @@
       border: 1.5px solid white
     }
 
+    .avatar-topbar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--violet));
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      border: 2px solid white;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .avatar-topbar:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 0 3px var(--accent-glow);
     }
 
     /* ── PROFILE DROPDOWN ── */
@@ -2438,16 +2458,27 @@
       }
 
       async function apiJson(path, options) {
-        const res = await apiFetch(path, options);
-        if (res.status === 401 || res.status === 403) {
-          doLogout();
-          throw new Error('Sessione scaduta o accesso negato');
+        try {
+          const res = await apiFetch(path, options);
+          if (res.status === 401 || res.status === 403) {
+            if (token) doLogout();
+            throw new Error('Sessione scaduta o non autorizzata');
+          }
+          if (!res.ok) {
+            let errorText = 'Errore sconosciuto';
+            try {
+              const errData = await res.json();
+              errorText = errData.message || errData.error || errorText;
+            } catch (_) {
+              errorText = await res.text() || ('Errore ' + res.status);
+            }
+            throw new Error(errorText);
+          }
+          return await res.json();
+        } catch (err) {
+          console.error('API Error:', err);
+          throw err;
         }
-        if (!res.ok) {
-          const text = await res.text();
-          throw new Error(text || ('Errore API: ' + res.status));
-        }
-        return await res.json();
       }
 
       function showApp() {
@@ -2461,13 +2492,23 @@
       }
 
       window.doLogout = function doLogout() {
-        if (!token && !jwtPayload) return;
+        // Se siamo già disconnessi, non fare nulla
+        if (!token && document.getElementById('loginScreen').style.display !== 'none') return;
+        
         token = '';
         jwtPayload = null;
         localStorage.removeItem(ADMIN_TOKEN_KEY);
+        
         showLogin();
+        
         const passEl = document.getElementById('loginPass');
         if (passEl) passEl.value = '';
+        const errEl = document.getElementById('loginError');
+        if (errEl) {
+           errEl.style.display = 'none';
+           errEl.textContent = '';
+        }
+        
         const dropdown = document.getElementById('profile-dropdown');
         if (dropdown) dropdown.classList.remove('show');
       };
@@ -2560,17 +2601,20 @@
           const isActiveStr = u.isActive
             ? '<span class="status-pill status-active">Attivo</span>'
             : '<span class="status-pill status-away">Disattivato</span>';
-          const actionBtn = u.isActive
-            ? `<button class="icon-btn-sm danger" title="Disattiva" data-action="toggle" data-id="${u.id}">
-                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                   <path d="M3 6h18"></path><path d="M8 6v14"></path><path d="M16 6v14"></path><path d="M10 6l1-2h2l1 2"></path>
-                 </svg>
-               </button>`
-            : `<button class="icon-btn-sm" title="Riattiva" data-action="toggle" data-id="${u.id}">
-                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                   <path d="M20 12a8 8 0 1 1-2.34-5.66"></path><path d="M20 4v8h-8"></path>
-                 </svg>
-               </button>`;
+          
+          const toggleIcon = u.isActive 
+            ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="5" width="22" height="14" rx="7" ry="7"/><circle cx="16" cy="12" r="3"/></svg>`
+            : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="5" width="22" height="14" rx="7" ry="7"/><circle cx="8" cy="12" r="3"/></svg>`;
+
+          const actionBtns = `
+            <button class="icon-btn-sm" title="${u.isActive ? 'Disattiva' : 'Riattiva'}" data-action="toggle" data-id="${u.id}">
+              ${toggleIcon}
+            </button>
+            <button class="icon-btn-sm danger" title="Elimina Permanentemente" data-action="delete" data-id="${u.id}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line>
+              </svg>
+            </button>`;
 
           const row = document.createElement('div');
           row.className = 'emp-row';
@@ -2585,7 +2629,7 @@
             <div class="emp-td">Tecnico App</div>
             <div class="emp-td">${jobsMonth}</div>
             <div class="emp-td">${isActiveStr}</div>
-            <div class="emp-actions">${actionBtn}</div>
+            <div class="emp-actions">${actionBtns}</div>
           `;
           list.appendChild(row);
         });
@@ -2595,10 +2639,29 @@
             e.stopPropagation();
             const id = this.getAttribute('data-id');
             if (!id) return;
-            if (!confirm('Sicuro di voler cambiare lo stato di questo utente?')) return;
-            await apiJson('/api/users/' + id, { method: 'DELETE' });
-            await loadUsers();
-            await syncModalEmployees();
+            try {
+              await apiJson('/api/users/' + id + '/toggle-status', { method: 'PATCH' });
+              await loadUsers();
+              await syncModalEmployees();
+            } catch (err) {
+              alert(err.message || 'Errore nel cambio stato');
+            }
+          });
+        });
+
+        list.querySelectorAll('[data-action="delete"]').forEach(btn => {
+          btn.addEventListener('click', async function (e) {
+            e.stopPropagation();
+            const id = this.getAttribute('data-id');
+            if (!id) return;
+            if (!confirm('ATTENZIONE: Eliminando questo utente verranno rimossi tutti i suoi incarichi. Vuoi procedere con l\'eliminazione permanente?')) return;
+            try {
+              await apiJson('/api/users/' + id, { method: 'DELETE' });
+              await loadUsers();
+              await syncModalEmployees();
+            } catch (err) {
+              alert(err.message || 'Errore nell\'eliminazione');
+            }
           });
         });
       }
@@ -2628,7 +2691,10 @@
           tag.className = 'ms-tag';
           tag.textContent = u.name || u.email || ('Utente ' + u.id);
           tag.dataset.userId = String(u.id);
-          tag.addEventListener('click', function () { this.classList.toggle('selected'); });
+          tag.addEventListener('click', function (e) { 
+            e.stopPropagation();
+            this.classList.toggle('selected'); 
+          });
           wrap.appendChild(tag);
         });
       }
@@ -2964,11 +3030,13 @@
       document.getElementById('modal-close-btn').addEventListener('click', closeModal);
       document.getElementById('modal-cancel-btn').addEventListener('click', closeModal);
       document.getElementById('modal-save-btn').addEventListener('click', async function () {
+        const btn = this;
         const date = document.getElementById('modal-date').value;
         const time = document.getElementById('modal-time').value;
         const workTypeId = parseInt(document.getElementById('modal-worktype').value || '0', 10);
-        if (!workTypeId) { alert('Seleziona un tipo di lavoro'); return; }
-        if (!date || !time) { alert('Inserisci data e ora'); return; }
+        
+        if (!workTypeId) { alert('Scegli un modello di lavoro (Template)'); return; }
+        if (!date || !time) { alert('Metti una data e un orario validi'); return; }
 
         const locVal = document.getElementById('modal-location').value.trim() || null;
         const prioVal = parseInt(document.getElementById('modal-priority').value, 10) || 1;
@@ -2983,16 +3051,20 @@
 
         const uIds = Array.from(document.querySelectorAll('#modal-employees .ms-tag.selected')).map(el => parseInt(el.dataset.userId, 10));
 
-        // create DateStart as local datetime -> ISO
-        const isoStart = new Date(date + 'T' + time + ':00').toISOString();
+        btn.disabled = true;
+        btn.textContent = 'Salvataggio...';
 
         try {
+          // Creiamo la data locale e la convertiamo in ISO
+          const localDate = new Date(date + 'T' + time + ':00');
+          if (isNaN(localDate.getTime())) throw new Error('Data o orario non validi');
+
           await apiJson('/api/intervention', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               workTypeId,
-              dateStart: isoStart,
+              dateStart: localDate.toISOString(),
               location: locVal,
               titleOverride: null,
               descriptionOverride: finalDesc,
@@ -3005,7 +3077,10 @@
           renderCalendar();
           navigate('calendar');
         } catch (err) {
-          alert(err && err.message ? err.message : 'Errore durante il salvataggio');
+          alert('Uffa! Non sono riuscito a salvare: ' + (err.message || 'errore strano'));
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'Salva Intervento';
         }
       });
 
@@ -3247,11 +3322,15 @@
                item.style.display = text.includes(q) ? 'flex' : 'none';
              });
           } else if (activePage.id === 'page-calendar') {
-             // Calendar is harder, maybe just highlight or filter labels?
-             // For now let's filter chips inside days
-             activePage.querySelectorAll('.intervention-chip').forEach(chip => {
-               const text = chip.textContent.toLowerCase();
-               chip.style.opacity = text.includes(q) ? '1' : '0.2';
+             activePage.querySelectorAll('.cal-day').forEach(day => {
+               const chips = day.querySelectorAll('.intervention-chip');
+               let found = false;
+               chips.forEach(chip => {
+                 const match = chip.textContent.toLowerCase().includes(q);
+                 chip.style.opacity = match || !q ? '1' : '0.2';
+                 if (match) found = true;
+               });
+               // optional: highlight day if found
              });
           } else if (activePage.id === 'page-jobs') {
              activePage.querySelectorAll('.activity-item').forEach(row => {

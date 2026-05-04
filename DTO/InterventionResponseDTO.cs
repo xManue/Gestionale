@@ -12,5 +12,6 @@ namespace Backend.DTO
         public DateTimeOffset? DateEnd { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset? CompletedAt { get; set; }
+        public List<AssignedUserDTO> AssignedTo { get; set; } = new();
     }
 }
